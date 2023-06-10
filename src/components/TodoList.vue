@@ -1,9 +1,8 @@
 <script setup lang="ts">
-// import { computed } from '@vue/reactivity';
-import { computed } from '@vue/reactivity';
+import { computed, reactive } from 'vue';
 import { ref } from 'vue'
 
-const idx = ref(0)
+const idx = ref(1)
 
 interface Task {
     index: number,
@@ -12,17 +11,27 @@ interface Task {
 }
 
 const tasks = ref<Task[]>([
-    { index: idx.value, name: 'ToDoリストをつくる', done: true }
+    { index: 0, name: 'ToDoリストをつくる', done: true }
 ])
+
+let taskNameSet = new Set<string>();
+taskNameSet = reactive(taskNameSet)
+taskNameSet.add(tasks.value[0].name)
 
 const newTaskName = ref('')
 
+const hasSameTask = ref<boolean>(false)
 const addTask = () => {
-    if (newTaskName.value != '') {
+    console.log(taskNameSet)
+    if(taskNameSet.has(newTaskName.value)){
+        hasSameTask.value = true
+    } else if (newTaskName.value != '') {
+        hasSameTask.value = false
         tasks.value.push({ index: idx.value, name: newTaskName.value, done: false })
+        taskNameSet.add(newTaskName.value)
         newTaskName.value = ''
+        idx.value++
     }
-    idx.value++
 }
 
 function getDone(idx: number) {
@@ -51,18 +60,22 @@ const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
                 未完了のタスクはありません。全部終わってえらいね
             </div>
             <li v-for="task in undoneTasks" :key="task.name">
-                <button @click="getDone(idx)">おわった</button>
+                <button @click="getDone(task.index)">おわった</button>
                 {{ task.name }}
             </li>
         </ul>
     </div>
     <input v-model="newTaskName" type="text" />
     <button @click="addTask">タスクを追加</button>
+    <div v-if="hasSameTask" class="err">すでに同名のタスクがあります！</div>
 </template>
 
 <style>
 .done {
     color: gray;
+}
+.err {
+    color: red;
 }
 </style>
 
