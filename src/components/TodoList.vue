@@ -26,14 +26,15 @@ interface Task {
 const tasks = ref<Task[]>([
     // { index: 0, name: 'ToDoリストをつくる', done: true }
 ])
+let taskNameSet = new Set<string>();
+taskNameSet = reactive(taskNameSet)
 
 if (localStorage.getItem('ls')) {
     tasks.value = JSON.parse(localStorage.getItem('ls') || '{}')
 }
-
-let taskNameSet = new Set<string>();
-taskNameSet = reactive(taskNameSet)
-// taskNameSet.add(tasks.value[0].name)
+for(let elem of tasks.value){
+    taskNameSet.add(elem.name)
+}
 
 const newTaskName = ref('')
 const hasSameTask = ref(false)
