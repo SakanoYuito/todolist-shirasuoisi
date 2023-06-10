@@ -2,7 +2,11 @@
 import { computed, reactive } from 'vue';
 import { ref } from 'vue'
 
-const idx = ref(1)
+const idx = ref(0)
+
+if (localStorage.getItem('ls')) {
+    idx.value = JSON.parse(localStorage.getItem('ls')).length
+}
 
 interface Task {
     index: number,
@@ -11,19 +15,23 @@ interface Task {
 }
 
 const tasks = ref<Task[]>([
-    { index: 0, name: 'ToDoリストをつくる', done: true }
+    // { index: 0, name: 'ToDoリストをつくる', done: true }
 ])
+
+if (localStorage.getItem('ls')) {
+    tasks.value = JSON.parse(localStorage.getItem('ls'))
+}
 
 let taskNameSet = new Set<string>();
 taskNameSet = reactive(taskNameSet)
-taskNameSet.add(tasks.value[0].name)
+// taskNameSet.add(tasks.value[0].name)
 
 const newTaskName = ref('')
 
 const hasSameTask = ref<boolean>(false)
 const addTask = () => {
-    console.log(taskNameSet)
-    if(taskNameSet.has(newTaskName.value)){
+    // console.log(taskNameSet)
+    if (taskNameSet.has(newTaskName.value)) {
         hasSameTask.value = true
     } else if (newTaskName.value != '') {
         hasSameTask.value = false
@@ -32,10 +40,12 @@ const addTask = () => {
         newTaskName.value = ''
         idx.value++
     }
+    localStorage.setItem('ls', JSON.stringify(tasks.value))
 }
 
 function getDone(idx: number) {
     tasks.value[idx].done = true;
+    localStorage.setItem('ls', JSON.stringify(tasks.value))
 }
 
 
@@ -74,6 +84,7 @@ const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
 .done {
     color: gray;
 }
+
 .err {
     color: red;
 }
