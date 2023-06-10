@@ -1,32 +1,37 @@
 <script setup lang="ts">
 // import { computed } from '@vue/reactivity';
+import { computed } from '@vue/reactivity';
 import { ref } from 'vue'
 
+const idx = ref(0)
+
 interface Task {
+    index: number,
     name: string,
     done: boolean,
 }
 
 const tasks = ref<Task[]>([
-    { name: 'ToDoリストをつくる', done: true }
+    { index: idx.value, name: 'ToDoリストをつくる', done: true }
 ])
-
 
 const newTaskName = ref('')
 
 const addTask = () => {
     if (newTaskName.value != '') {
-        tasks.value.push({ name: newTaskName.value, done: false })
+        tasks.value.push({ index: idx.value, name: newTaskName.value, done: false })
         newTaskName.value = ''
     }
+    idx.value++
 }
 
-function done(idx: number) {
+function getDone(idx: number) {
     tasks.value[idx].done = true;
 }
 
 
-
+const doneTasks = computed(() => tasks.value.filter((task) => task.done))
+const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
 
 
 </script>
@@ -35,18 +40,19 @@ function done(idx: number) {
     <h2>ToDo List</h2>
     <div>完了したタスク
         <ul>
-            <li v-for="task in tasks" :key="task.name">
-                <div v-if="task.done">{{ task.name }}</div>
+            <li v-for="task in doneTasks" :key="task.name" class="done">
+                <div>{{ task.name }}</div>
             </li>
         </ul>
     </div>
     <div>未完了のタスク
         <ul>
-            <li v-for="(task, idx) in tasks" :key="task.name">
-                <div v-if="!task.done">
-                    <button @click="done(idx)">おわった</button>
-                    {{ task.name }}
-                </div>
+            <div v-if="undoneTasks.length == 0">
+                未完了のタスクはありません。全部終わってえらいね
+            </div>
+            <li v-for="task in undoneTasks" :key="task.name">
+                <button @click="getDone(idx)">おわった</button>
+                {{ task.name }}
             </li>
         </ul>
     </div>
@@ -54,5 +60,9 @@ function done(idx: number) {
     <button @click="addTask">タスクを追加</button>
 </template>
 
-<style></style>
+<style>
+.done {
+    color: gray;
+}
+</style>
 
