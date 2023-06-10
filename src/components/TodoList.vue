@@ -71,10 +71,14 @@ function dueDateCalc(due: string): number {
     return CUMDAYS[Number(dues[0])] + Number(dues[1])
 }
 
+function resetData() {
+    localStorage.removeItem('ls')
+    location.reload()
+}
+
 // タスクを 完了 / 未完 にわける
 const doneTasks = computed(() => tasks.value.filter((task) => task.done))
 const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
-
 
 </script>
 
@@ -117,9 +121,13 @@ const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
                 <option v-for="d in DAYS[Number(newTaskDue[0]) - 1]" :key="d" v-bind:value="d">{{ d }}</option>
             </select>
             日
+            <button @click="addTask">追加</button>
         </div>
-        <button @click="addTask">追加</button>
+
         <div v-if="hasSameTask" class="err">すでに同名のタスクがあります！</div>
+    </div>
+    <div>
+        <button @click="resetData">リセット</button>
     </div>
 </template>
 
