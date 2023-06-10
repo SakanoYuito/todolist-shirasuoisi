@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ClickCounter from './ClickCounter.vue'
-import ItemList from './ItemList.vue'
+// import ClickCounter from './ClickCounter.vue'
+// import ItemList from './ItemList.vue'
 import TodoList from './TodoList.vue'
 
 defineProps<{
@@ -11,8 +11,8 @@ defineProps<{
 <template>
   <div>
     <h1>{{ msg }}</h1>
-    <ClickCounter />
-    <ItemList />
+    <!-- <ClickCounter />
+    <ItemList /> -->
     <TodoList />
   </div>
 </template>
