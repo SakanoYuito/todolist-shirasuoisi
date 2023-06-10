@@ -5,7 +5,7 @@ import { ref } from 'vue'
 const idx = ref(0)
 
 if (localStorage.getItem('ls')) {
-    idx.value = JSON.parse(localStorage.getItem('ls')).length
+    idx.value = JSON.parse(localStorage.getItem('ls') || '{}').length
 }
 
 interface Task {
@@ -19,7 +19,7 @@ const tasks = ref<Task[]>([
 ])
 
 if (localStorage.getItem('ls')) {
-    tasks.value = JSON.parse(localStorage.getItem('ls'))
+    tasks.value = JSON.parse(localStorage.getItem('ls') || '{}')
 }
 
 let taskNameSet = new Set<string>();
