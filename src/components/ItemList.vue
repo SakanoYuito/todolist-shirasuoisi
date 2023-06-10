@@ -25,7 +25,7 @@ const addItem = () => {
 </script>
 
 <template>
-    <div>ItemList</div>
+    <h2>ItemList</h2>
     <ul>
         <li v-for="item in items" :key="item.name" :class="{ over500: item.price >= 500 }">
             <div>名前: {{ item.name }}</div>
