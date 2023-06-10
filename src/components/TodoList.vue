@@ -9,9 +9,7 @@ const INF = 10000
 const t = new Date()
 const today = CUMDAYS[t.getMonth()] + t.getDate()
 
-
 const idx = ref(0)
-
 if (localStorage.getItem('ls')) {
     idx.value = JSON.parse(localStorage.getItem('ls') || '{}').length
 }
@@ -23,16 +21,17 @@ interface Task {
     due: string,
 }
 
-const tasks = ref<Task[]>([
-    // { index: 0, name: 'ToDoリストをつくる', done: true }
-])
+// タスクのリスト
+const tasks = ref<Task[]>([])
+
+// 重複判定用
 let taskNameSet = new Set<string>();
 taskNameSet = reactive(taskNameSet)
 
 if (localStorage.getItem('ls')) {
     tasks.value = JSON.parse(localStorage.getItem('ls') || '{}')
 }
-for(let elem of tasks.value){
+for (let elem of tasks.value) {
     taskNameSet.add(elem.name)
 }
 
@@ -43,7 +42,6 @@ const newTaskDue = reactive<[string, string]>(['', ''])
 
 
 const addTask = () => {
-    // console.log(taskNameSet)
     if (taskNameSet.has(newTaskName.value)) {
         hasSameTask.value = true
     } else if (newTaskName.value != '') {
@@ -67,12 +65,13 @@ function dueFormatter(): string {
 }
 
 function dueDateCalc(due: string): number {
-    if(due == '期限なし') {return INF}
+    if (due == '期限なし') { return INF }
     const dues = due.slice(0, -1).split("月")
 
     return CUMDAYS[Number(dues[0])] + Number(dues[1])
 }
 
+// タスクを 完了 / 未完 にわける
 const doneTasks = computed(() => tasks.value.filter((task) => task.done))
 const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
 
@@ -95,7 +94,7 @@ const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
             <div v-if="undoneTasks.length == 0">
                 未完了のタスクはありません。全部終わってえらいね
             </div>
-            <li v-for="task in undoneTasks" :key="task.name" :class="{ delayed : today >= dueDateCalc(task.due)}">
+            <li v-for="task in undoneTasks" :key="task.name" :class="{ delayed: today >= dueDateCalc(task.due) }">
                 <button @click="getDone(task.index)">おわった</button>
                 {{ task.name }}
                 {{ task.due }}
@@ -129,7 +128,8 @@ const undoneTasks = computed(() => tasks.value.filter((task) => !task.done))
     color: gray;
 }
 
-.err, .delayed{
+.err,
+.delayed {
     color: red;
 }
 </style>
